@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { database } from '../firebaseConfig';
 
-// 1. Define the shape of a single session from Firebase
 interface GameSession {
   EnemiesKilled?: number;
   UsedSkills?: string[];
-  [key: string]: any; 
+  [key: string]: any;
 }
 
-// 2. Define the UI State interfaces
 interface Stats {
   totalKills: number;
   averageKills: string | number;
@@ -24,15 +22,13 @@ interface Skill {
 }
 
 export default function Analysis() {
-  // 3. Properly type the stats state
-  const [stats, setStats] = useState<Stats>({ 
-    totalKills: 0, 
-    averageKills: 0, 
+  const [stats, setStats] = useState<Stats>({
+    totalKills: 0,
+    averageKills: 0,
     totalSessions: 0,
     totalSkillsUsed: 0
   });
 
-  // 4. Properly type the skills array state (prevents "never[]" error)
   const [skillsData, setSkillsData] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,17 +40,15 @@ export default function Analysis() {
       const data = snapshot.val();
       if (data) {
         const sessionKeys = Object.keys(data).filter(key => !key.startsWith('.'));
-        // 5. Cast the session values to our interface
         const sessionValues = sessionKeys.map(key => data[key] as GameSession);
-        
+
         const totalKills = sessionValues.reduce((sum, item) => sum + (item.EnemiesKilled || 0), 0);
         const totalSessions = sessionKeys.length;
         const averageKills = totalSessions > 0 ? (totalKills / totalSessions).toFixed(2) : 0;
 
-        // 6. Type the accumulator object for skills
         const skillCount: Record<string, number> = {};
         let totalSkillsUsed = 0;
-        
+
         sessionValues.forEach(session => {
           if (session.UsedSkills && Array.isArray(session.UsedSkills)) {
             session.UsedSkills.forEach((skill: string) => {
@@ -91,14 +85,12 @@ export default function Analysis() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerEmoji}>📊</Text>
         <Text style={styles.header}>Oyun Analizi</Text>
         <Text style={styles.subHeader}>Detaylı performans istatistikleri</Text>
       </View>
 
-      {/* İstatistik Kartları */}
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
           <View style={styles.statIconContainer}>
@@ -133,7 +125,6 @@ export default function Analysis() {
         </View>
       </View>
 
-      {/* Skill Kullanım Listesi */}
       {skillsData.length > 0 ? (
         <View style={styles.skillSection}>
           <View style={styles.sectionHeader}>
@@ -143,7 +134,6 @@ export default function Analysis() {
             </Text>
           </View>
 
-          {/* En çok kullanılan skill - öne çıkarılmış */}
           <View style={styles.topSkillCard}>
             <Text style={styles.topSkillBadge}>#1</Text>
             <Text style={styles.topSkillName}>{skillsData[0].name}</Text>
@@ -153,7 +143,6 @@ export default function Analysis() {
             </View>
           </View>
 
-          {/* Diğer skiller */}
           <View style={styles.skillsListContainer}>
             {skillsData.slice(1).map((skill, index) => {
               const percentage = (skill.count / skillsData[0].count) * 100;
@@ -165,11 +154,11 @@ export default function Analysis() {
                     <Text style={styles.skillValue}>{skill.count} kez</Text>
                   </View>
                   <View style={styles.skillBarContainer}>
-                    <View 
+                    <View
                       style={[
-                        styles.skillBarFill, 
+                        styles.skillBarFill,
                         { width: `${percentage}%` }
-                      ]} 
+                      ]}
                     />
                   </View>
                 </View>
@@ -190,20 +179,19 @@ export default function Analysis() {
         </View>
       )}
 
-      {/* Alt boşluk */}
       <View style={{ height: 30 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#F8F9FA' 
+  container: {
+    flex: 1,
+    backgroundColor: '#F8F9FA'
   },
-  centerContainer: { 
-    flex: 1, 
-    justifyContent: 'center', 
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F8F9FA'
   },
@@ -213,9 +201,8 @@ const styles = StyleSheet.create({
     color: '#6C757D',
     fontWeight: '500'
   },
-  
-  // Header Styles
-  headerContainer: { 
+
+  headerContainer: {
     paddingVertical: 30,
     paddingHorizontal: 20,
     backgroundColor: '#FFFFFF',
@@ -227,9 +214,9 @@ const styles = StyleSheet.create({
     fontSize: 48,
     marginBottom: 10
   },
-  header: { 
-    fontSize: 28, 
-    fontWeight: 'bold', 
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
     color: '#2C3E50',
     marginBottom: 5
   },
@@ -238,8 +225,7 @@ const styles = StyleSheet.create({
     color: '#6C757D',
     fontWeight: '400'
   },
-  
-  // Stats Cards
+
   statsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -268,23 +254,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12
   },
-  statIcon: { 
+  statIcon: {
     fontSize: 24
   },
-  statValue: { 
-    fontSize: 26, 
-    fontWeight: 'bold', 
+  statValue: {
+    fontSize: 26,
+    fontWeight: 'bold',
     color: '#2C3E50',
     marginBottom: 5
   },
-  statLabel: { 
-    fontSize: 12, 
+  statLabel: {
+    fontSize: 12,
     color: '#6C757D',
     textAlign: 'center',
     fontWeight: '500'
   },
-  
-  // Skill Section
+
   skillSection: {
     margin: 15,
     backgroundColor: '#FFFFFF',
@@ -311,8 +296,7 @@ const styles = StyleSheet.create({
     color: '#6C757D',
     fontWeight: '400'
   },
-  
-  // Top Skill Card
+
   topSkillCard: {
     backgroundColor: '#4ECDC4',
     padding: 25,
@@ -355,8 +339,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 4
   },
-  
-  // Skills List
+
   skillsListContainer: {
     gap: 15
   },
@@ -405,8 +388,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4ECDC4',
     borderRadius: 3
   },
-  
-  // No Data State
+
   noDataContainer: {
     backgroundColor: '#FFFFFF',
     margin: 15,

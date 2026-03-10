@@ -25,10 +25,10 @@ export default function Players() {
 
         Object.keys(data).forEach(key => {
           if (key.startsWith('.')) return;
-          
+
           const session = data[key];
           const pId = session.PlayerID || 'Misafir_Oyuncu';
-          const pName = session.PlayerID || 'İsimsiz Oyuncu'; // PlayerID'yi isim olarak kullan
+          const pName = session.PlayerID || 'İsimsiz Oyuncu';
 
           if (!stats[pId]) {
             stats[pId] = {
@@ -95,14 +95,14 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   title: { fontSize: 22, fontWeight: 'bold', padding: 20, textAlign: 'center' },
-  playerCard: { 
-    backgroundColor: '#fff', 
-    borderRadius: 12, 
-    padding: 15, 
-    marginBottom: 10, 
-    flexDirection: 'row', 
+  playerCard: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 10,
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    elevation: 2 
+    elevation: 2
   },
   playerInfo: { flex: 1, justifyContent: 'center' },
   playerName: { fontSize: 18, fontWeight: 'bold', color: '#333' },
